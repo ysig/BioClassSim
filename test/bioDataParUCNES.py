@@ -30,7 +30,7 @@ if os.path.exists('SimilaritiesAndDictionaries/UCNE.npz'):
     l1 = npz['l1']
     l2 = npz['l2']
     l = npz['l']
-
+    L = np.append(np.zeros(l1),np.ones(l2),axis=0)
 else:
     sr = br.SequenceReader()
     
@@ -97,7 +97,6 @@ else:
     np.savez('SimilaritiesAndDictionaries/UCNE.npz', hd=hd, cd=cd, l1=l1, l2=l2, l=l, S=S)
 
 evaluator = cl.Evaluator(cl.SVM())
-
 reps = 10
 
 S1 = S[0:l1,:]
@@ -105,7 +104,6 @@ S2 = S[l1:,:]
 L1 = L[0:l1]
 L2 = L[l1:]
 
-acc = evaluator.kfold((S1,S2),(L1,L2),reps)
-
-print "Overall classification accuracy for "+str(reps)+" repetitions\n of random 80%/20% split of train/test data\n is "+str(acc)+"%."
+metrics = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
+np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics)
 

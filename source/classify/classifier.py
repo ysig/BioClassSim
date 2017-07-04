@@ -43,14 +43,8 @@ class SVM(classifier):
             
     def learn_mat(self,X,labels,t = 4):
         self._clf = svm.SVC(kernel='precomputed')
-        kernel = kernelization(self,X,t)
+        kernel = self.kernelization(X,t)
         self._clf.fit(kernel,labels)
     
-    def test(self,X,labels):
-        if(X.shape[0] != labels.shape[0]):
-            raise ValueError('In order to classify labels must be in a numpy nx1 array and test to be in a nxm.')
-        else:
-            return np.mean(self.classify(X) * labels)
-        
     def classify(self,X):
-        return self._clf.predict(X)
+    	return self._clf.predict(X)
