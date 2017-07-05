@@ -100,7 +100,7 @@ S2 = S[l1:,:]
 L1 = L[0:l1]
 L2 = L[l1:]
 
-metrics = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
-np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics)
+metrics,cm = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
+np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics, cm=cm)
 
 

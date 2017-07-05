@@ -90,10 +90,11 @@ class Evaluator:
                 print "Classification round: "+str(i)
             training,training_labels,testing,testing_labels = randPerm(S,L,fact=fact)
             if(i==1):
-                cm = self.single(training,training_labels,testing,testing_labels)
+                cm = self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
             else: 
-                cm += self.single(training,training_labels,testing,testing_labels)
+                cm += self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
         metrics = CalculateMetrics(cm)
-        if (verbose):
+        if verbose:
+            print "Displaying Metrics.."
             displayMetrics(metrics)
         return metrics, cm
