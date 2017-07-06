@@ -59,7 +59,7 @@ def CalculateMetrics(cm):
     # Microaverage metrics
     tmetrics = dict()    
     # Sensitivity, hit rate, recall, or true positive rate
-	TPs = float(np.sum(TP,axis=0))
+    TPs = float(np.sum(TP,axis=0))
     FNs = float(np.sum(FN,axis=0))
     TNs = float(np.sum(TN,axis=0))
     FPs = float(np.sum(FP,axis=0))
