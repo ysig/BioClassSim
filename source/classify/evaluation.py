@@ -31,11 +31,16 @@ def randPerm(S,L,fact=0.8):
         return training,training_labels,testing,testing_labels
 
 def calculateTFNP(cm):
-    diag = np.diag(cm)
-    FP = np.sum(np.sum(cm,axis=0) - diag)
-    FN = np.sum(np.sum(cm,axis=1) - diag)
-    TP = np.sum(diag)
-    TN = np.sum(cm) - (FP + FN + TP)
+    s = np.sum(cm)
+    tp = np.zeros(cm.shape[0])
+    fp = np.zeros(cm.shape[0])
+    fn = np.zeros(cm.shape[0])
+    tn = np.zeros(cm.shape[0])
+    for i in range(cm.shape[0]):
+        tp[i] = cm[i, i] 
+        fp[i] = np.sum(cm, axis=0)[i] - cm[i, i]
+        fn[i] = np.sum(cm, axis=1)[i] - cm[i, i]
+        tn[i] = s - tp[i] - fp[i] - tn[i]
     return FP,FN,TP,TN
 
 def CalculateMetrics(cm):
@@ -44,7 +49,7 @@ def CalculateMetrics(cm):
     # Sensitivity, hit rate, recall, or true positive rate
     metrics['recall'] = TP/(TP+FN)
     # Specificity or true negative rate
-    metrics['specifity'] = TN/(TN+FP) 
+    metrics['specifity'] = TN/(TN+FP)
     # Precision or positive predictive value
     metrics['precision'] = TP/(TP+FP)
     # Negative predictive value
@@ -92,7 +97,7 @@ class Evaluator:
             if(i==1):
                 cm = self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
             else: 
-                cm += self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
+                cm = np.add(cm,self.single(training,training_labels,testing,testing_labels,calculate_metrics = False))
         metrics = CalculateMetrics(cm)
         if verbose:
             print "Displaying Metrics.."
