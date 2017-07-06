@@ -44,28 +44,71 @@ def calculateTFNP(cm):
     return FP,FN,TP,TN
 
 def CalculateMetrics(cm):
+# considers no dummy class
     FP,FN,TP,TN = calculateTFNP(cm)
     metrics = dict()
+    # True Positive
+    metrics['TP'] = TP
+    # False Positive
+    metrics['FP'] = FP
+    # False Negative
+    metrics['FN'] = FN
+    # True Negative
+    metrics['TN'] = TN
+    
+    # Microaverage metrics
+    tmetrics = dict()    
     # Sensitivity, hit rate, recall, or true positive rate
-    metrics['recall'] = TP/(TP+FN)
+	TPs = float(np.sum(TP,axis=0))
+    FNs = float(np.sum(FN,axis=0))
+    TNs = float(np.sum(TN,axis=0))
+    FPs = float(np.sum(FP,axis=0))
+    tmetrics['recall'] = TPs/(TPs+FNs)
     # Specificity or true negative rate
-    metrics['specifity'] = TN/(TN+FP)
+    tmetrics['specifity'] = TNs/(TNs+FPs)
     # Precision or positive predictive value
-    metrics['precision'] = TP/(TP+FP)
+    tmetrics['precision'] = TPs/(TPs+FPs)
     # Negative predictive value
-    metrics['negative_predictive_value'] = TN/(TN+FN)
+    tmetrics['negative_predictive_value'] = TNs/(TNs+FNs)
     # Fall out or false positive rate
-    metrics['fall_out'] = FP/(FP+TN)
+    tmetrics['fall_out'] = FPs/(FPs+TNs)
     # False negative rate
-    metrics['false_negative_rate'] = FN/(TP+FN)
+    tmetrics['false_negative_rate'] = FNs/(TPs+FNs)
     # False discovery rate
-    metrics['false_discovery_rate'] = FP/(TP+FP)
-
+    tmetrics['false_discovery_rate'] = FPs/(TPs+FPs)
+    # Fmeasure
+    tmetrics['Fmeasure'] = 2*TPs/(2*TPs+FNs+FPs)
     # Overall accuracy
-    metrics['accuracy'] = (TP+TN)/(TP+FP+FN+TN)
+    tmetrics['accuracy'] = (TPs+TNs)/(TPs+FPs+FNs+TNs)
+	metrics['microaverage'] = tmetrics
+
+    # Macroaverage metrics
+    tmetrics = dict()
+    # Sensitivity, hit rate, recall, or true positive rate
+	tmetrics['recall'] = np.mean(np.divide(TP,float(np.add(TP,FN))))
+    # Specificity or true negative rate
+    tmetrics['specifity'] = np.mean(np.divide(TN,float(np.add(TN,FP))))
+    # Precision or positive predictive value
+    tmetrics['precision'] = np.mean(np.divide(TP,float(np.add(TP,FP))))
+    # Negative predictive value
+    tmetrics['negative_predictive_value'] = np.mean(np.divide(TN,float(np.add(TN,FN))))
+    # Fall out or false positive rate
+    tmetrics['fall_out'] = np.mean(np.divide(FP,float(np.add(FP,TN))))
+    # False negative rate
+    tmetrics['false_negative_rate'] = np.mean(np.divide(FN,float(np.add(TP,FN))))
+    # False discovery rate
+    tmetrics['false_discovery_rate'] = np.mean(np.divide(FP,float(np.add(TP,FP))))
+    # Fmeasure
+    tmetrics['Fmeasure'] = np.mean(np.divide(2*TP,float(np.add(np.add(2*TP,FN),FP)))
+    # Overall accuracy
+    tmetrics['accuracy'] = np.mean(np.divide(np.add(TP,TN),np.add(np.add(np.add(TP,FP),FN),TN)))
+	metrics['macroaverage'] = tmetrics
     return metrics
 
-def displayMetrics(metrics):
+def displayMetrics(Metrics):
+
+    metrics = Metrics['microaverage']
+    print "Microaverage Metrics.. \n"
     print "Sensitivity: ",metrics['recall']
     print "Specifity: ",metrics['specifity']
     print "Precision: ",metrics['precision']
@@ -73,7 +116,21 @@ def displayMetrics(metrics):
     print "Fall out: ",metrics['fall_out']
     print "False negative rate: ", metrics['false_negative_rate']
     print "False discovery rate: ", metrics['false_discovery_rate']
+    print "Fmeasure: ", metrics['Fmeasure']
     print "Accuracy: ", metrics['accuracy']
+
+    metrics = Metrics['macroaverage']
+    print "\n Microaverage Metrics.. \n"
+    print "Sensitivity: ",metrics['recall']
+    print "Specifity: ",metrics['specifity']
+    print "Precision: ",metrics['precision']
+    print "Negative predictive value: ", metrics['negative_predictive_value']
+    print "Fall out: ",metrics['fall_out']
+    print "False negative rate: ", metrics['false_negative_rate']
+    print "False discovery rate: ", metrics['false_discovery_rate']
+    print "Fmeasure: ", metrics['Fmeasure']
+    print "Accuracy: ", metrics['accuracy']
+
 
 class Evaluator: 
     
