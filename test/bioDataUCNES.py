@@ -92,15 +92,24 @@ else:
     np.savez('SimilaritiesAndDictionaries/UCNE.npz', hd=hd, cd=cd, l1=l1, l2=l2,
  l=l, S=S)
 
-evaluator = cl.Evaluator(cl.SVM())
+
 reps = 10
 
-S1 = S[0:l1,:]
-S2 = S[l1:,:]
 L1 = L[0:l1]
 L2 = L[l1:]
 
-metrics,cm = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
+metrics = dict()
+cm = dict()
+
+class_types = {0:"No kernelization",1:"Spectrum Clip",2:"Spectrum Flip",3:"Spectrum Shift",4:"Spectrum Square"}
+print "Testing for different kernelization methods..\n\n"
+for i in range(0,5):
+    print class_types[i],"\n"
+    evaluator = cl.Evaluator(cl.SVM())
+    Sp = cl.kernelization(S,i)
+    S1 = Sp[0:l1,:]
+    S2 = Sp[l1:,:] 
+    metrics[class_types[i]],cm[class_types[i]] = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
+    print ""
+
 np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics, cm=cm)
-
-
