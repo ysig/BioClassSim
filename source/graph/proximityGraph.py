@@ -1,6 +1,7 @@
+import os
 import sys
-sys.path.append('../../../')
 import networkx as nx
+sys.path.append('../../../../')
 from PyINSECT import representations as REP
 import scipy.spatial as spatial
 

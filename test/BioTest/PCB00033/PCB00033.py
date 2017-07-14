@@ -2,16 +2,19 @@ import numpy as np
 import os
 import sys
 #import class files
-sys.path.append('../../')
+sys.path.append('../../../')
 from source import bioRead as br
 from source import classify as cl
 #import PyInsect for measuring similarity
-sys.path.append('../../../')
+sys.path.append('../../../../')
 from PyINSECT import representations as REP
 from PyINSECT import comparators as CMP
 
-if os.path.exists('SimilaritiesAndDictionaries/UCNE.npz'):
-    npz = np.load('SimilaritiesAndDictionaries/UCNE.npz')
+# A python script to examine classification problem for 
+# dataset PCB00033 on: http://pongor.itk.ppke.hu/benchmark/#/Browse
+
+if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
+    npz = np.load('SimilaritiesAndDictionaries/PCB00033.npz')
     hd = npz['hd']
     cd = npz['cd']
     S = npz['S']
@@ -22,11 +25,19 @@ if os.path.exists('SimilaritiesAndDictionaries/UCNE.npz'):
 else:
     sr = br.SequenceReader()
     
-    sr.read('./biodata/UCNEs/hg19_UCNEs.fasta')
+    # get dictionary
+    sr.read('./CATH95.fasta')
     hd = sr.getDictionary()
-
-    print "Gained Human Dictionary"
-
+    # append in each key the word 'pdb|'.
+    
+    # read ascii table contaning labels for each experiment
+    q = np.genfromtxt('CATH95_C_A_kfold_14_0.3_filt_33.cast', names=True, delimiter='\t', dtype=None)
+    
+    #num_of_experiments = q.shape[0]-1
+    
+    
+    
+"""
     sr.read('./biodata/UCNEs/galGal3_UCNEs.fasta')
     cd = sr.getDictionary()
 
@@ -113,3 +124,4 @@ for i in range(0,5):
     print ""
 
 np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics, cm=cm)
+"""

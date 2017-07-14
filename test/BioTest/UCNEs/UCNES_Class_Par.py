@@ -6,11 +6,11 @@ import os
 import sys
 import dill
 #import class files
-sys.path.append('../../')
+sys.path.append('../../../')
 from source import bioRead as br
 from source import classify as cl
 #import PyInsect for measuring similarity
-sys.path.append('../../../')
+sys.path.append('../../../../')
 from PyINSECT import representations as REP
 from PyINSECT import comparators as CMP
 
