@@ -43,10 +43,17 @@ def calculateTFNP(cm):
         TN[i] = s - TP[i] - FP[i] - TN[i]
     return FP,FN,TP,TN
 
-def CalculateMetrics(cm):
+def CalculateMetrics(cm,has_dummy=False):
 # considers no dummy class
     FP,FN,TP,TN = calculateTFNP(cm)
     metrics = dict()
+    
+    if(has_dummy):
+        TP = TP.pop(0)
+        TN = TN.pop(0)
+        FP = FP.pop(0)
+        FN = FN.pop(0)
+
     # True Positive
     metrics['TP'] = TP
     # False Positive
@@ -105,43 +112,45 @@ def CalculateMetrics(cm):
     metrics['macroaverage'] = tmetrics
     return metrics
 
-def displayMetrics(Metrics):
+def displayMetrics(Metrics,case = 1):
 
-    metrics = Metrics['microaverage']
-    print "Microaverage Metrics.. \n"
-    print "Sensitivity: ",metrics['recall']
-    print "Specifity: ",metrics['specifity']
-    print "Precision: ",metrics['precision']
-    print "Negative predictive value: ", metrics['negative_predictive_value']
-    print "Fall out: ",metrics['fall_out']
-    print "False negative rate: ", metrics['false_negative_rate']
-    print "False discovery rate: ", metrics['false_discovery_rate']
-    print "Fmeasure: ", metrics['Fmeasure']
-    print "Accuracy: ", metrics['accuracy']
+    if(case<=1):
+        metrics = Metrics['microaverage']
+        print "Microaverage Metrics.. \n"
+        print "Sensitivity: ",metrics['recall']
+        print "Specifity: ",metrics['specifity']
+        print "Precision: ",metrics['precision']
+        print "Negative predictive value: ", metrics['negative_predictive_value']
+        print "Fall out: ",metrics['fall_out']
+        print "False negative rate: ", metrics['false_negative_rate']
+        print "False discovery rate: ", metrics['false_discovery_rate']
+        print "Fmeasure: ", metrics['Fmeasure']
+        print "Accuracy: ", metrics['accuracy']
 
-    metrics = Metrics['macroaverage']
-    print "\nMacroaverage Metrics.. \n"
-    print "Sensitivity: ",metrics['recall']
-    print "Specifity: ",metrics['specifity']
-    print "Precision: ",metrics['precision']
-    print "Negative predictive value: ", metrics['negative_predictive_value']
-    print "Fall out: ",metrics['fall_out']
-    print "False negative rate: ", metrics['false_negative_rate']
-    print "False discovery rate: ", metrics['false_discovery_rate']
-    print "Fmeasure: ", metrics['Fmeasure']
-    print "Accuracy: ", metrics['accuracy']
+    if(case>=1):
+        metrics = Metrics['macroaverage']
+        print "\nMacroaverage Metrics.. \n"
+        print "Sensitivity: ",metrics['recall']
+        print "Specifity: ",metrics['specifity']
+        print "Precision: ",metrics['precision']
+        print "Negative predictive value: ", metrics['negative_predictive_value']
+        print "Fall out: ",metrics['fall_out']
+        print "False negative rate: ", metrics['false_negative_rate']
+        print "False discovery rate: ", metrics['false_discovery_rate']
+        print "Fmeasure: ", metrics['Fmeasure']
+        print "Accuracy: ", metrics['accuracy']
 
 class Evaluator: 
     
     def __init__(self,classifier):
         self._Classifier = classifier
     
-    def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True):
+    def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
         self._Classifier.learn_mat(training,training_labels)
         Lp = self._Classifier.classify(testing)
         cm = confusion_matrix(testing_labels, Lp)
         if (calculate_metrics==True):
-            return CalculateMetrics(cm),cm
+            return CalculateMetrics(cm,has_dummy),cm
         else:
             return cm
 

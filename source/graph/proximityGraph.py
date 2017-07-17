@@ -1,7 +1,7 @@
 import os
 import sys
 import networkx as nx
-sys.path.append('../../../../')
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../..'))
 from PyINSECT import representations as REP
 import scipy.spatial as spatial
 
@@ -14,7 +14,7 @@ def decompose_tl(l):
     return list1,list2
 
 class ProximityGraph(REP.DocumentNGramGraph,object):
-    def __init__(self, Data_Metric = [], n=3, Dwin=2, GPrintVerbose = True):
+    def __init__(self, n=3, Dwin=2, Data_Metric = [], GPrintVerbose = True):
         # distance_metric is a list of touples
         # containing symbols and their 3D coordinates
         Data, self._m = decompose_tl(list(Data_Metric))

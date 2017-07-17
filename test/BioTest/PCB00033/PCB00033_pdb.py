@@ -5,9 +5,9 @@ import sys
 sys.path.append('../../../')
 from source import bioRead as br
 from source import classify as cl
+from source import graph as GR
 #import PyInsect for measuring similarity
 sys.path.append('../../../../')
-from PyINSECT import representations as REP
 from PyINSECT import comparators as CMP
 
 # A python script to examine classification problem for 
@@ -22,18 +22,18 @@ if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     indexes = npz['indexes']
 else:
     sr = br.SequenceReader()
-    
-    if not os.path.exists('CATH95.fasta'):
-        os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.fasta')
-    if not os.path.exists('CATH95_C_A_kfold_14_0.3_filt_33.cast'):
-        os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast')
+    if not os.path.exists('CATH95'):
+        os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.pdb.tar.gz")
+        os.system("tar -xf CATH95.pdb.tar.gz")
+    if not os.path.exists("CATH95_C_A_kfold_14_0.3_filt_33.cast"):
+        os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast")
 
     # get dictionary
-    sr.read('./CATH95.fasta','pdb|')
+	reader.read_folder('CATH95')
     hd = sr.getDictionary()
     print "Dictionaries Gained"
     # append in each key the word 'pdb|'.
-    	
+    
     # read ascii table contaning labels for each experiment
     q = np.genfromtxt('CATH95_C_A_kfold_14_0.3_filt_33.cast', names=True, delimiter='\t', dtype=None)
     print "Cast Matrix read"
@@ -41,7 +41,7 @@ else:
     #create ngram's (normal)
     ngg = dict()
     for (key,val) in hd.iteritems():
-        ngg[key] = REP.DocumentNGramGraph(3,2,val)
+        ngg[key] = GR.ProximityGraph(3,2,val)
     print "Ngrams Constructed"
     #calculate similarities (as dictionary)
     sop = CMP.SimilarityNVS()
