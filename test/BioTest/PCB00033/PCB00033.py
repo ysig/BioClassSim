@@ -20,7 +20,6 @@ if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     s = npz['s']
     l = npz['l']
     indexes = npz['indexes'].item()
-
 else:
     if not os.path.exists('CATH95.fasta'):
         os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.fasta')
