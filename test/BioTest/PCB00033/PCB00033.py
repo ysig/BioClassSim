@@ -19,7 +19,8 @@ if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     q = npz['q']
     s = npz['s']
     l = npz['l']
-    indexes = npz['indexes']
+    indexes = npz['indexes'].item()
+
 else:
     if not os.path.exists('CATH95.fasta'):
         os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.fasta')
@@ -67,7 +68,7 @@ else:
     np.savez('SimilaritiesAndDictionaries/PCB00033.npz', hd=hd, l=l, s=s, q=q, indexes=indexes)
 
 # make label sets
-num_of_experiments = q.shape[0]-1
+num_of_experiments = len(list(q[0]))-1
 experiments = dict()
 for i in range(0,num_of_experiments):
     experiments[i] = dict()
@@ -76,13 +77,12 @@ for i in range(0,num_of_experiments):
     experiments[i]['test+'] = list()
     experiments[i]['test-'] = list()
 
-for line in q:
-    name = line[0]
+for lin in q:
+    line = list(lin)
+    name = str(line[0])
     i=0
     for tag in line[1:]:
-        if(tag==0):
-            continue
-        elif(tag==1):
+        if(tag==1):
             # positive train
             experiments[i]['train+'].append(indexes[name])
         elif(tag==2):
@@ -103,8 +103,8 @@ for i in range(0,num_of_experiments):
     experiments[i]['ltr-'] = len(experiments[i]['train-'])
     experiments[i]['lte+'] = len(experiments[i]['test+'])
     experiments[i]['lte-'] = len(experiments[i]['test-'])
-    experiments[i]['train'] = experiments[i]['train+'] + experiments['train']
-    tS = S[:,experiments[i]['train']]
+    experiments[i]['train'] = experiments[i]['train+'] + experiments[i]['train-']
+    tS = s[:,experiments[i]['train']]
     experiments[i]['Strain+'] = tS[experiments[i]['train+'],:]
     experiments[i]['Strain-'] = tS[experiments[i]['train-'],:]
     experiments[i]['Ltrain+'] = np.ones(experiments[i]['ltr+'])
@@ -114,9 +114,9 @@ for i in range(0,num_of_experiments):
     experiments[i]['Ltest+'] = np.ones(experiments[i]['lte+'])
     experiments[i]['Ltest-'] = np.zeros(experiments[i]['lte-'])        
         
-    print str(i)+"th experiment with:\n#train+ = "+str(experiments[i]['ltr+'])+", #train- = "+str(experiments[i]['ltr-'])+"\n#test+ = "+str(experiments[i]['lte+'])+", #test- = "+str(experiments[i]['lte-'])
+    print str(i+1)+"th experiment with:\n#train+ = "+str(experiments[i]['ltr+'])+", #train- = "+str(experiments[i]['ltr-'])+"\n#test+ = "+str(experiments[i]['lte+'])+", #test- = "+str(experiments[i]['lte-'])
     print "\nDisplaying metrics"
     experiments[i]['metrics'],experiments[i]['confusion_matrix'] = evaluator.single(np.append(experiments[i]['Strain-'], experiments[i]['Strain+'] ,axis=0),np.append(experiments[i]['Ltrain-'],experiments[i]['Ltrain+'],axis=0),np.append(experiments[i]['Stest-'],experiments[i]['Stest+'],axis=0),np.append(experiments[i]['Ltest-'],experiments[i]['Ltest+'],axis=0),has_dummy=True)
-    displayMetrics(experiments[i]['metrics'],0)
+    cl.displayMetrics(experiments[i]['metrics'],0)
     print "\n"
 np.savez('SimilaritiesAndDictionaries/experiments.npz', experiments=experiments)

@@ -49,10 +49,10 @@ def CalculateMetrics(cm,has_dummy=False):
     metrics = dict()
     
     if(has_dummy):
-        TP = TP.pop(0)
-        TN = TN.pop(0)
-        FP = FP.pop(0)
-        FN = FN.pop(0)
+        TP = np.delete(TP,0,0)
+        TN = np.delete(TN,0,0)
+        FP = np.delete(FP,0,0)
+        FN = np.delete(FN,0,0)
 
     # True Positive
     metrics['TP'] = TP
@@ -70,23 +70,23 @@ def CalculateMetrics(cm,has_dummy=False):
     FNs = float(np.sum(FN,axis=0))
     TNs = float(np.sum(TN,axis=0))
     FPs = float(np.sum(FP,axis=0))
-    tmetrics['recall'] = TPs/(TPs+FNs)
+    tmetrics['recall'] = np.divide(TPs,(TPs+FNs))
     # Specificity or true negative rate
-    tmetrics['specifity'] = TNs/(TNs+FPs)
+    tmetrics['specifity'] = np.divide(TNs,(TNs+FPs))
     # Precision or positive predictive value
-    tmetrics['precision'] = TPs/(TPs+FPs)
+    tmetrics['precision'] = np.divide(TPs,(TPs+FPs))
     # Negative predictive value
-    tmetrics['negative_predictive_value'] = TNs/(TNs+FNs)
+    tmetrics['negative_predictive_value'] = np.divide(TNs,(TNs+FNs))
     # Fall out or false positive rate
-    tmetrics['fall_out'] = FPs/(FPs+TNs)
+    tmetrics['fall_out'] = np.divide(FPs,(FPs+TNs))
     # False negative rate
-    tmetrics['false_negative_rate'] = FNs/(TPs+FNs)
+    tmetrics['false_negative_rate'] = np.divide(FNs,(TPs+FNs))
     # False discovery rate
-    tmetrics['false_discovery_rate'] = FPs/(TPs+FPs)
+    tmetrics['false_discovery_rate'] = np.divide(FPs,(TPs+FPs))
     # Fmeasure
-    tmetrics['Fmeasure'] = 2*TPs/(2*TPs+FNs+FPs)
+    tmetrics['Fmeasure'] = np.divide(2*TPs,(2*TPs+FNs+FPs))
     # Overall accuracy
-    tmetrics['accuracy'] = (TPs+TNs)/(TPs+FPs+FNs+TNs)
+    tmetrics['accuracy'] = np.divide((TPs+TNs),(TPs+FPs+FNs+TNs))
     metrics['microaverage'] = tmetrics
 
     # Macroaverage metrics
