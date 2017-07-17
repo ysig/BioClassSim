@@ -21,21 +21,23 @@ if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     l = npz['l']
     indexes = npz['indexes']
 else:
-    sr = br.SequenceReader()
-    if not os.path.exists('CATH95'):
+
+    if not os.path.exists("CATH95.pdb.tar.gz"):
         os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.pdb.tar.gz")
+    if not os.path.exists("CATH95"):
         os.system("tar -xf CATH95.pdb.tar.gz")
     if not os.path.exists("CATH95_C_A_kfold_14_0.3_filt_33.cast"):
         os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast")
 
     # get dictionary
-	reader.read_folder('CATH95')
-    hd = sr.getDictionary()
+    reader = br.PDBreader()
+    reader.read_folder(os.path.abspath("CATH95"))
+    hd = reader.getDictionary()
     print "Dictionaries Gained"
     # append in each key the word 'pdb|'.
     
     # read ascii table contaning labels for each experiment
-    q = np.genfromtxt('CATH95_C_A_kfold_14_0.3_filt_33.cast', names=True, delimiter='\t', dtype=None)
+    q = np.genfromtxt("CATH95_C_A_kfold_14_0.3_filt_33.cast", names=True, delimiter='\t', dtype=None)
     print "Cast Matrix read"
     
     #create ngram's (normal)

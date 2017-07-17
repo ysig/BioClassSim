@@ -21,14 +21,14 @@ if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     l = npz['l']
     indexes = npz['indexes']
 else:
-    sr = br.SequenceReader()
-    
     if not os.path.exists('CATH95.fasta'):
         os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.fasta')
     if not os.path.exists('CATH95_C_A_kfold_14_0.3_filt_33.cast'):
         os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast')
 
     # get dictionary
+    sr = br.SequenceReader()
+    
     sr.read('./CATH95.fasta','pdb|')
     hd = sr.getDictionary()
     print "Dictionaries Gained"

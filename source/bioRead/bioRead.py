@@ -59,7 +59,6 @@ class PDBreader:
                             pos = np.append(pos,np.array([atom.get_coord()]),axis=0)
                     mod.append((seq[i],np.mean(pos,axis=0)))
                     i+=1
-            print str(model)
             Model[str(model)] = mod
         self._sequence_dictionary = Model
 
