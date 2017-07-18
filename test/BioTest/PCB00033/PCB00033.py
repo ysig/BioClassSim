@@ -15,7 +15,7 @@ from PyINSECT import comparators as CMP
 
 if os.path.exists('SimilaritiesAndDictionaries/PCB00033.npz'):
     npz = np.load('SimilaritiesAndDictionaries/PCB00033.npz')
-    hd = npz['hd']
+    hd = npz['hd'].item()
     q = npz['q']
     s = npz['s']
     l = npz['l']
@@ -60,7 +60,9 @@ else:
                 s[i,j] = sop.getSimilarityDouble(ngg[k],ngg[l])
             j+=1
         i+=1
+    del ngg
     print "Similarity Matrix created"
+	
     if not os.path.exists('SimilaritiesAndDictionaries'):
         os.mkdir('SimilaritiesAndDictionaries')
 

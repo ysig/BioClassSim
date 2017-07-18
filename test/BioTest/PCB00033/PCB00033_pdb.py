@@ -15,7 +15,7 @@ from PyINSECT import comparators as CMP
 
 if os.path.exists('SimilaritiesAndDictionaries/PCB00033_pdb.npz'):
     npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb.npz')
-    hd = npz['hd']
+    hd = npz['hd'].item()
     q = npz['q']
     s = npz['s']
     l = npz['l']
@@ -39,8 +39,8 @@ else:
         hd = reader.getDictionary()
         np.savez('SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz', hd=hd)
     else:
-        npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb.npz')
-        hd = npz['hd']
+        npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz')
+        hd = npz['hd'].item()
     print "Dictionaries Gained"
         
 
@@ -71,7 +71,7 @@ else:
             j+=1
         i+=1
     print "Similarity Matrix created"
-
+    del ngg
     np.savez('SimilaritiesAndDictionaries/PCB00033_pdb.npz', hd=hd, l=l, s=s, q=q, indexes=indexes)
 
 # make label sets
