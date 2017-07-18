@@ -28,14 +28,19 @@ else:
         os.system("tar -xf CATH95.pdb.tar.gz")
     if not os.path.exists("CATH95_C_A_kfold_14_0.3_filt_33.cast"):
         os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast")
-
-    # get dictionary
-    reader = br.PDBreader()
-    reader.read_folder(os.path.abspath("CATH95"))
-    hd = reader.getDictionary()
-    print "Dictionaries Gained"
-    # append in each key the word 'pdb|'.
     
+    if not os.path.exists("SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz"):
+        # get dictionary
+        reader = br.PDBreader()
+        reader.read_folder(os.path.abspath("CATH95"))
+        hd = reader.getDictionary()
+        np.savez('SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz', hd=hd)
+    else:
+        npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb.npz')
+        hd = npz['hd']
+    print "Dictionaries Gained"
+        
+
     # read ascii table contaning labels for each experiment
     q = np.genfromtxt("CATH95_C_A_kfold_14_0.3_filt_33.cast", names=True, delimiter='\t', dtype=None)
     print "Cast Matrix read"
