@@ -15,7 +15,6 @@ from PyINSECT import comparators as CMP
 
 if os.path.exists('SimilaritiesAndDictionaries/PCB00033_pdb.npz'):
     npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb.npz')
-    hd = npz['hd'].item()
     q = npz['q']
     s = npz['s']
     l = npz['l']
@@ -51,19 +50,21 @@ else:
     #create ngram's (normal)
     ngg = dict()
     for (key,val) in hd.iteritems():
-        ngg[key] = GR.ProximityGraph(3,2,val)
+        ngg[key] = GR.ProximityGraph(3,5,val)
     print "Ngrams Constructed"
     #calculate similarities (as dictionary)
     sop = CMP.SimilarityNVS()
     
-    l = len(hd.keys())
+	dkeys = hd.keys()
+	del hd
+    l = len(dkeys)
     s = np.empty([l,l])
     indexes = dict()
     i=0
-    for (k,v) in hd.iteritems():
+    for k in dkeys:
         indexes[k] = i
         j = 0
-        for (l,z) in hd.iteritems():
+        for l in dkeys:
             if(indexes.has_key(l)):
                 s[j,i] = s[i,j]
             else:
@@ -72,7 +73,7 @@ else:
         i+=1
     print "Similarity Matrix created"
     del ngg
-    np.savez('SimilaritiesAndDictionaries/PCB00033_pdb.npz', hd=hd, l=l, s=s, q=q, indexes=indexes)
+    np.savez('SimilaritiesAndDictionaries/PCB00033_pdb.npz', l=l, s=s, q=q, indexes=indexes)
 
 # make label sets
 num_of_experiments = len(list(q[0]))-1
