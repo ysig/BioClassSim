@@ -30,6 +30,9 @@ else:
         os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95_C_A_kfold_14_0.3_filt_33.cast")
     
     if not os.path.exists("SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz"):
+        if not os.path.exists('SimilaritiesAndDictionaries'):
+            os.mkdir('SimilaritiesAndDictionaries')
+
         # get dictionary
         reader = br.PDBreader()
         reader.read_folder(os.path.abspath("CATH95"))
@@ -68,8 +71,6 @@ else:
             j+=1
         i+=1
     print "Similarity Matrix created"
-    if not os.path.exists('SimilaritiesAndDictionaries'):
-        os.mkdir('SimilaritiesAndDictionaries')
 
     np.savez('SimilaritiesAndDictionaries/PCB00033_pdb.npz', hd=hd, l=l, s=s, q=q, indexes=indexes)
 
