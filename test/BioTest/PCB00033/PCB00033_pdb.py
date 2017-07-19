@@ -55,8 +55,8 @@ else:
     #calculate similarities (as dictionary)
     sop = CMP.SimilarityNVS()
     
-	dkeys = hd.keys()
-	del hd
+    dkeys = hd.keys()
+    del hd
     l = len(dkeys)
     s = np.empty([l,l])
     indexes = dict()
