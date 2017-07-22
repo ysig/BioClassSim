@@ -22,7 +22,7 @@ class ProximityGraph(REP.DocumentNGramGraph,object):
         # distance_metric is a list of touples
         # containing symbols and their 3D coordinates
         Data, Metric = decompose_tl(list(Data_Metric))
-        self._Dwin = abs(int(Dwin))
+        self._Dwin = abs(float(Dwin))
         self._n = abs(int(n))
         self.setData(Data)
         self.setm(Metric)
