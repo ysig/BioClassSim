@@ -10,8 +10,6 @@ from PyINSECT import representations as REP
 sr = br.SequenceReader()
 sr.read('Schizosaccharomyces_pombe.ASM294v2.30.dna.I.fa')
 d = sr.getDictionary()
-print d['name']
 
-    
-ngg1 = REP.DocumentNGramGraph(3,2,d["name"])
+ngg1 = REP.DocumentNGramGraph(3,2,d["I"])
 ngg1.GraphDraw(False) 
