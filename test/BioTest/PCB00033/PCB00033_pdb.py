@@ -125,6 +125,8 @@ for i in range(0,num_of_experiments):
     print str(i+1)+"th experiment with:\n#train+ = "+str(experiments[i]['ltr+'])+", #train- = "+str(experiments[i]['ltr-'])+"\n#test+ = "+str(experiments[i]['lte+'])+", #test- = "+str(experiments[i]['lte-'])
     print "\nDisplaying metrics"
     experiments[i]['metrics'],experiments[i]['confusion_matrix'] = evaluator.single(np.append(experiments[i]['Strain-'], experiments[i]['Strain+'] ,axis=0),np.append(experiments[i]['Ltrain-'],experiments[i]['Ltrain+'],axis=0),np.append(experiments[i]['Stest-'],experiments[i]['Stest+'],axis=0),np.append(experiments[i]['Ltest-'],experiments[i]['Ltest+'],axis=0),has_dummy=True)
+    experiments[i]['AUC'] = evaluator.AUC(np.append(experiments[i]['Strain-'], experiments[i]['Strain+'] ,axis=0),np.append(experiments[i]['Ltrain-'],experiments[i]['Ltrain+'],axis=0),np.append(experiments[i]['Stest-'],experiments[i]['Stest+'],axis=0),np.append(experiments[i]['Ltest-'],experiments[i]['Ltest+'],axis=0))
     cl.displayMetrics(experiments[i]['metrics'],0)
+    print "\nAUC = ",experiments[i]['AUC']
     print "\n"
 np.savez('SimilaritiesAndDictionaries/experiments_pdb.npz', experiments=experiments)
