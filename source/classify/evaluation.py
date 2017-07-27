@@ -149,7 +149,7 @@ class Evaluator:
         classifier = self._Classifier
         classifier.learn_mat(training,training_labels,probability = True)
         probabilities = classifier.predict_prob(testing)
-        return roc_auc_score(testing_labels, probabilities)
+        return roc_auc_score(testing_labels, probabilities[:,1])
         
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
         classifier = self._Classifier

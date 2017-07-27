@@ -52,7 +52,7 @@ class SVM(classifier):
     	return self._clf.predict(X_test)
 
     def predict_prob(self,X_test):
-        return self._clf.predict_prob(X_test)
+        return self._clf.predict_proba(X_test)
 
     def decision_function(self,X_test):
         return self._clf.decision_function(X_test)
