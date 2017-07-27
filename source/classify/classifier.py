@@ -47,12 +47,15 @@ class SVM(classifier):
 	# input is in the form of a valid kernel
         self._clf = svm.SVC(kernel='precomputed',probability = probability)
         self._clf.fit(X,labels)
-        
+                
+    def classify(self,X_test):
+    	return self._clf.predict(X_test)
+
+    def predict_prob(self,X_test):
+        return self._clf.predict_prob(X_test)
+
     def decision_function(self,X_test):
         return self._clf.decision_function(X_test)
-        
-    def classify(self,X):
-    	return self._clf.predict(X)
 
     def getClassifier(self):
         return self._clf

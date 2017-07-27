@@ -148,8 +148,8 @@ class Evaluator:
     def AUC(self,training,training_labels,testing,testing_labels):
         classifier = self._Classifier
         classifier.learn_mat(training,training_labels,probability = True)
-        score = classifier.decision_function(testing)
-        return roc_auc_score(testing_labels, score)
+        probabilities = classifier.predict_prob(testing)
+        return roc_auc_score(testing_labels, probabilities)
         
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
         classifier = self._Classifier
