@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn import svm
-from sklearn.metrics import confusion_matrix, roc_curve, auc
+from sklearn.metrics import confusion_matrix, roc_auc_score
 
 def randPerm(S,L,fact=0.8):
         ltotal = 0
@@ -146,15 +146,15 @@ class Evaluator:
         self._Classifier = classifier
     
     def AUC(self,training,training_labels,testing,testing_labels):
-        self._Classifier.learn_mat(training,training_labels)
-        self._Classifier.learn_mat(training, training_labels, True)
-        score = self._Classifier.decision_function(testing)
-        fpr, tpr, _ = roc_curve(testing_labels, score)
-        return auc(fpr, tpr)
+        classifier = self._Classifier
+        classifier.learn_mat(training,training_labels,probability = True)
+        score = classifier.decision_function(testing)
+        return roc_auc_score(testing_labels, score)
         
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
-        self._Classifier.learn_mat(training,training_labels)
-        Lp = self._Classifier.classify(testing)
+		classifier = self._Classifier
+        classifier.learn_mat(training,training_labels)
+        Lp = classifier.classify(testing)
         cm = confusion_matrix(testing_labels, Lp)
         if (calculate_metrics==True):
             return CalculateMetrics(cm,has_dummy),cm
