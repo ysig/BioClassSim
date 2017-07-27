@@ -41,23 +41,27 @@ else:
         npz = np.load('SimilaritiesAndDictionaries/PCB00033_pdb_dict.npz')
         hd = npz['hd'].item()
     print "Dictionaries Gained"
-        
-
+    dkeys = hd.keys()
+    l = len(dkeys)
     # read ascii table contaning labels for each experiment
     q = np.genfromtxt("CATH95_C_A_kfold_14_0.3_filt_33.cast", names=True, delimiter='\t', dtype=None)
     print "Cast Matrix read"
     
+    verbosity = True
     #create ngram's (normal)
     ngg = dict()
+    i=1
     for (key,val) in hd.iteritems():
+        if(verbosity):
+            print "\rRound "+str(i)+"/"+str(l),
+            sys.stdout.flush()
+            i+=1
         ngg[key] = GR.ProximityGraph(3,5,val)
-    print "Ngrams Constructed"
+    print "\nNgrams Constructed"
     #calculate similarities (as dictionary)
     sop = CMP.SimilarityNVS()
     
-    dkeys = hd.keys()
     del hd
-    l = len(dkeys)
     s = np.empty([l,l])
     indexes = dict()
     i=0

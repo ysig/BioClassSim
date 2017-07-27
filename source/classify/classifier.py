@@ -43,9 +43,9 @@ class SVM(classifier):
     def __init__(self):
         self._clf = None 
 
-    def learn_mat(self,X,labels,propability=False):
+    def learn_mat(self,X,labels,probability=False):
 	# input is in the form of a valid kernel
-        self._clf = svm.SVC(kernel='precomputed',propability = propability)
+        self._clf = svm.SVC(kernel='precomputed',probability = probability)
         self._clf.fit(X,labels)
         
     def decision_function(self,X_test):

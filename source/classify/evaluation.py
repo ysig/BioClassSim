@@ -147,7 +147,8 @@ class Evaluator:
     
     def AUC(self,training,training_labels,testing,testing_labels):
         self._Classifier.learn_mat(training,training_labels)
-        score = self._Classifier.learn_mat(training, training_labels, True).decision_function(testing)
+        self._Classifier.learn_mat(training, training_labels, True)
+        score = self._Classifier.decision_function(testing)
         fpr, tpr, _ = roc_curve(testing_labels, score)
         return auc(fpr, tpr)
         
