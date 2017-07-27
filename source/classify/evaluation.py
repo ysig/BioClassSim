@@ -152,7 +152,7 @@ class Evaluator:
         return roc_auc_score(testing_labels, score)
         
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
-		classifier = self._Classifier
+        classifier = self._Classifier
         classifier.learn_mat(training,training_labels)
         Lp = classifier.classify(testing)
         cm = confusion_matrix(testing_labels, Lp)
