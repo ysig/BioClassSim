@@ -6,6 +6,8 @@ from PyINSECT import representations as REP
 import scipy.spatial as spatial
 
 
+# could be done by using zip founction
+# in its inverse
 def decompose_tl(l):
     if(l==[]):
         return [],[]

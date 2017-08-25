@@ -70,7 +70,7 @@ else:
         j = 0
         for l in dkeys:
             if(indexes.has_key(l)):
-                s[j,i] = s[i,j]
+                s[i,j] = s[j,i]
             else:
                 s[i,j] = sop.getSimilarityDouble(ngg[k],ngg[l])
             j+=1

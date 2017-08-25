@@ -2,10 +2,15 @@ import numpy as np
 from sklearn import svm
 from sklearn.metrics import confusion_matrix, roc_auc_score
 
+# randomly permutes in equal amount and segments
+# Samples,labels by a factor of "fact"
 def randPerm(S,L,fact=0.8):
         ltotal = 0
         for i in range(len(S)):
             l = S[i].shape[0]
+            # indices are taken randomly
+            # based on the sample size and append 
+            # by a total length
             indices = np.random.permutation(l)+ltotal
             limit = int(l*fact)
             if(i==0):
@@ -30,6 +35,7 @@ def randPerm(S,L,fact=0.8):
         
         return training,training_labels,testing,testing_labels
 
+# Calculate TP,FP,TN,FN
 def calculateTFNP(cm):
     s = np.sum(cm)
     TP = np.zeros(cm.shape[0])
@@ -145,12 +151,14 @@ class Evaluator:
     def __init__(self,classifier):
         self._Classifier = classifier
     
+    # calculates AUC
     def AUC(self,training,training_labels,testing,testing_labels):
         classifier = self._Classifier
         classifier.learn_mat(training,training_labels,probability = True)
         probabilities = classifier.predict_prob(testing)
         return roc_auc_score(testing_labels, probabilities[:,1])
         
+    # single classification experiment
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
         classifier = self._Classifier
         classifier.learn_mat(training,training_labels)
@@ -161,6 +169,7 @@ class Evaluator:
         else:
             return cm
 
+    # conduct a k fold experiment
     def kfold(self,S,L,k,fact =0.8,verbose = False):
         for i in range(1, k+1):
             if verbose:

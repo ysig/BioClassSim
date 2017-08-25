@@ -50,12 +50,13 @@ else:
     s = np.empty([l,l])
     indexes = dict()
     i=0
+    # build similarity mat
     for (k,v) in hd.iteritems():
         indexes[k] = i
         j = 0
         for (l,z) in hd.iteritems():
             if(indexes.has_key(l)):
-                s[j,i] = s[i,j]
+                s[i,j] = s[j,i]
             else:
                 s[i,j] = sop.getSimilarityDouble(ngg[k],ngg[l])
             j+=1

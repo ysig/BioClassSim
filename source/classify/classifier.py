@@ -45,6 +45,8 @@ class SVM(classifier):
 
     def learn_mat(self,X,labels,probability=False):
 	# input is in the form of a valid kernel
+	# propability parameter determines if svm fit
+	# result will be in 01 form or not
         self._clf = svm.SVC(kernel='precomputed',probability = probability)
         self._clf.fit(X,labels)
                 
