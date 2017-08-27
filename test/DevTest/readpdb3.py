@@ -18,23 +18,23 @@ def keep2nd(d):
         q[key] = ''.join(list(x[0]))
     return q
 
-if not os.path.exists('CATH95.fasta'):
+if not os.path.exists('./CATH95.fasta'):
     os.system('wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.fasta')
 
 if not os.path.exists("PCB00033_pdb_dict.npz"):
         # get dictionary
-        if not os.path.exists("CATH95.pdb.tar.gz"):
-            os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/  repository/CATH95/CATH95.pdb.tar.gz")
-        if not os.path.exists("CATH95"):
+        if not os.path.exists("./CATH95.pdb.tar.gz"):
+            os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.pdb.tar.gz")
+        if not os.path.exists("./CATH95/"):
             os.system("tar -xf CATH95.pdb.tar.gz")
         reader = br.PDBreader()
         reader.read_folder(os.path.abspath("CATH95"))
         hd = reader.getDictionary()
         np.savez('PCB00033_pdb_dict.npz', hd=hd)
-    else:
+else:
         npz = np.load('PCB00033_pdb_dict.npz')
         hd = npz['hd'].item()
-    print "Dictionaries Gained"
+print "Dictionaries Gained"
 
 snd = keep2nd(hd)
 print "Unziped"

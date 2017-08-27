@@ -7,7 +7,8 @@ from source import bioRead as br
 from source import proximityGraph as pg
 import matplotlib.pyplot
 
-#os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.pdb.tar.gz")
+if not os.path.exists('./CATH95.pdb.tar.gz'):
+    os.system("wget http://pongor.itk.ppke.hu/benchmark/partials/repository/CATH95/CATH95.pdb.tar.gz")
 os.system("tar -xf CATH95.pdb.tar.gz")
 reader = br.PDBreader()
 
