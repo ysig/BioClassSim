@@ -4,10 +4,24 @@ from sklearn.metrics import confusion_matrix, roc_auc_score
 
 # randomly permutes in equal amount and segments
 # Samples,labels by a factor of "fact"
-def randPerm(S,L,fact=0.8):
+# Similarity Touple:
+# (S1,S2,...,Sk) where k the number of categories
+# and S1.size = n1 x (n1 + ... + nk)
+#     S2.size = n2 x (n1 + ... + nk)
+#        .      .  .        . 
+#        .      .  .        . 
+#        .      .  .        . 
+#     Sk.size = nk x (n1 + ... + nk)
+# where ni the number of samples in the ith category
+# concat(S1,...,Sk) = SimilarityMatrix
+#
+# Labels Touple:
+# (L1, ... , Lk): where Li a ni x 1 matrix with all elements
+# equal to the category number corresponding to Si
+def randPerm(Similarity_Touple,LabelesTouple,fact=0.8):
         ltotal = 0
-        for i in range(len(S)):
-            l = S[i].shape[0]
+        for i in range(len(Similarity_Touple)):
+            l = Similarity_Touple[i].shape[0]
             # indices are taken randomly
             # based on the sample size and append 
             # by a total length
@@ -16,13 +30,13 @@ def randPerm(S,L,fact=0.8):
             if(i==0):
                 training_idx = indices[:limit]
                 testing_idx = indices[limit:]
-                Similarity = S[i]
-                Labels = L[i]
+                Similarity = Similarity_Touple[i]
+                Labels = LabelesTouple[i]
             else:
                 training_idx = np.append(training_idx,indices[:limit],axis=0)
                 testing_idx = np.append(testing_idx,indices[limit:],axis=0)
-                Similarity = np.append(Similarity, S[i], axis=0)
-                Labels = np.append(Labels, L[i], axis=0)
+                Similarity = np.append(Similarity, Similarity_Touple[i], axis=0)
+                Labels = np.append(Labels, LabelesTouple[i], axis=0)
             ltotal+=l
         training = Similarity[training_idx,:]
         training = training[:,training_idx]
@@ -36,22 +50,25 @@ def randPerm(S,L,fact=0.8):
         return training,training_labels,testing,testing_labels
 
 # Calculate TP,FP,TN,FN
-def calculateTFNP(cm):
-    s = np.sum(cm)
-    TP = np.zeros(cm.shape[0])
-    FP = np.zeros(cm.shape[0])
-    FN = np.zeros(cm.shape[0])
-    TN = np.zeros(cm.shape[0])
-    for i in range(cm.shape[0]):
-        TP[i] = cm[i, i] 
-        FP[i] = np.sum(cm, axis=0)[i] - cm[i, i]
-        FN[i] = np.sum(cm, axis=1)[i] - cm[i, i]
+def calculateTFNP(ConfusionMatrix):
+    s = np.sum(ConfusionMatrix)
+    TP = np.zeros(ConfusionMatrix.shape[0])
+    FP = np.zeros(ConfusionMatrix.shape[0])
+    FN = np.zeros(ConfusionMatrix.shape[0])
+    TN = np.zeros(ConfusionMatrix.shape[0])
+    for i in range(ConfusionMatrix.shape[0]):
+        TP[i] = ConfusionMatrix[i, i] 
+        FP[i] = np.sum(ConfusionMatrix, axis=0)[i] - ConfusionMatrix[i, i]
+        FN[i] = np.sum(ConfusionMatrix, axis=1)[i] - ConfusionMatrix[i, i]
         TN[i] = s - TP[i] - FP[i] - TN[i]
     return FP,FN,TP,TN
 
-def CalculateMetrics(cm,has_dummy=False):
+# has dummy indicates if class 0
+# signifies a dummy (negative for all)
+# class
+def CalculateMetrics(ConfusionMatrix,has_dummy=False):
 # considers no dummy class
-    FP,FN,TP,TN = calculateTFNP(cm)
+    FP,FN,TP,TN = calculateTFNP(ConfusionMatrix)
     metrics = dict()
     
     if(has_dummy):
@@ -159,28 +176,32 @@ class Evaluator:
         return roc_auc_score(testing_labels, probabilities[:,1])
         
     # single classification experiment
+    # has dummy variable is given to calculate metric has dummy var
     def single(self,training,training_labels,testing,testing_labels,calculate_metrics = True, has_dummy = False):
         classifier = self._Classifier
         classifier.learn_mat(training,training_labels)
         Lp = classifier.classify(testing)
-        cm = confusion_matrix(testing_labels, Lp)
+        ConfusionMatrix = confusion_matrix(testing_labels, Lp)
         if (calculate_metrics==True):
-            return CalculateMetrics(cm,has_dummy),cm
+            return CalculateMetrics(ConfusionMatrix,has_dummy),ConfusionMatrix
         else:
-            return cm
+            return ConfusionMatrix
 
-    # conduct a k fold experiment
-    def kfold(self,S,L,k,fact =0.8,verbose = False):
+    # conduct a randomized k-fold experiment
+    # Verbose determines state printing
+    # for Labeles Touple, Similarity Touple
+    # see how they are defined on randPerm() -> goto page top
+    def Randomized_kfold(self,SimilarityTouple,LabelesTouple,k,fact =0.8,verbose = False):
         for i in range(1, k+1):
             if verbose:
                 print "Classification round: "+str(i)
-            training,training_labels,testing,testing_labels = randPerm(S,L,fact=fact)
+            training,training_labels,testing,testing_labels = randPerm(SimilarityTouple,LabelesTouple,fact=fact)
             if(i==1):
-                cm = self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
+                ConfusionMatrix = self.single(training,training_labels,testing,testing_labels,calculate_metrics = False)
             else: 
-                cm = np.add(cm,self.single(training,training_labels,testing,testing_labels,calculate_metrics = False))
-        metrics = CalculateMetrics(cm)
+                ConfusionMatrix = np.add(ConfusionMatrix,self.single(training,training_labels,testing,testing_labels,calculate_metrics = False))
+        metrics = CalculateMetrics(ConfusionMatrix)
         if verbose:
             print "Displaying Metrics.."
             displayMetrics(metrics)
-        return metrics, cm
+        return metrics, ConfusionMatrix

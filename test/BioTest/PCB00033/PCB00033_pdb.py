@@ -56,7 +56,7 @@ else:
             print "\rRound "+str(i)+"/"+str(l),
             sys.stdout.flush()
             i+=1
-        ngg[key] = GR.ProximityGraph(3,5,val)
+        ngg[key] = GR.MeanCenterGraph(3,5,val)
     print "\nNgrams Constructed"
     #calculate similarities (as dictionary)
     sop = CMP.SimilarityNVS()

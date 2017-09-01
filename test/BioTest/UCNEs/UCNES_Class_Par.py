@@ -112,7 +112,7 @@ for i in range(1,5):
     Sp = cl.kernelization(S,i)
     S1 = Sp[0:l1,:]
     S2 = Sp[l1:,:]
-    metrics[class_types[i]],cm[class_types[i]] = evaluator.kfold((S1,S2),(L1,L2),reps,verbose=True)
+    metrics[class_types[i]],cm[class_types[i]] = evaluator.Randomized_kfold((S1,S2),(L1,L2),reps,verbose=True)
     print ""
 
 np.savez('SimilaritiesAndDictionaries/metrics.npz', metrics=metrics, cm=cm)

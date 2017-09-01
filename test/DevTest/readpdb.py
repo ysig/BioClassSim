@@ -10,7 +10,7 @@ import matplotlib.pyplot
 
 reader = br.PDBreader()
 
-reader.read('5mss.pdb')
+reader.read('1l2y.pdb')
 
 q = reader.getDictionary()
 
@@ -25,3 +25,6 @@ a.GraphDraw()
 b = pg.CenterGraph(3,Dwin,q['<Model id=0>'])
 b.GraphDraw()
 
+# mean center graph
+c = pg.MeanCenterGraph(3,Dwin,q['<Model id=0>'])
+c.GraphDraw()
